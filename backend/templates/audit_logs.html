@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}Audit Logs{% endblock %}
+
+{% block content %}
+<h1>Audit Logs</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Bulk Order ID</th>
+            <th>User</th>
+            <th>Action</th>
+            <th>Details</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in logs %}
+        <tr>
+            <td>{{ log.bulk_id }}</td>
+            <td>{{ log.actor_user_id }}</td>
+            <td>{{ log.action }}</td>
+            <td>{{ log.before_state }} → {{ log.after_state }}</td>
+            <td>{{ log.timestamp }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

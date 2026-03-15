@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block title %}Inventory{% endblock %}
+
+{% block content%}
+
+    <div>
+        <table class="table">
+            <tr>
+                <th>Product</th>
+                <th>Id</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>SKU</th>
+            </tr>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.stock_quantity }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.sku }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}

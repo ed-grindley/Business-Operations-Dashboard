@@ -1,0 +1,122 @@
+Internal Admin Dashboard for small E-commerce business.
+
+This intermal admin dashboard will be used by staff members with different roles to:
+- manage orders
+- manage inventory
+- manage shipping operations
+
+This is a technical project, not UI polish
+
+
+Real e-commerce reequires:
+- viewing incoming orders- shipping mulitple orders at the same time
+- prevent illegal order states
+- see what succeeded and what failed
+
+What this fixes:
+- bulk operations with partial success
+- enforcement of business rules and roles in    the backend
+- Honest frontend feedback for failed operations
+- Clear separation of responsibilities between  frontend and backend
+
+
+The roles:
+
+Admin: 
+  - full access
+  - manage users, roles, permissions
+
+Operations:
+    - view orders
+    - ship orders
+
+Support:
+    - view orders only
+
+
+Key Features: 
+
+    - validates each order individually
+    - allow partial success
+    - return deatiled failures
+
+
+Order Lifecycle (State Machine)
+Order States
+
+    pending – payment not completed
+
+    paid – ready to be shipped
+
+    shipped – sent to customer
+
+    refunded – refunded after payment or shipping
+
+Valid Transitions
+
+    pending → paid
+
+    paid → shipped
+
+    paid → refunded
+
+    shipped → refunded
+
+    All other transitions are invalid and must be blocked by the backend.
+
+
+Bulk shipping: 
+
+    an order can only be shipped if: 
+        - it is paid 
+        - it is not yet shipped
+        - it has not been refunded
+        - inventory is available 
+
+
+Bulk shipping failures: 
+
+    - order not paid
+    - order shipped already
+    - order already refunded
+    - lack of inventory 
+they must be logged and reported, and not affect successful shipments
+
+
+Backend: 
+    - authentifications and permissions
+    - validate businesss rules
+    - process illegal trasiations
+    - process bulk shipment 
+    - show per order success or failures
+    - log all actions in audit logs
+
+Frontend:
+    - display orders segregated by states
+    - allow multi select of orders to send
+    - stop sending if permissions are missing
+    - show confirmation modal before shipping
+    - display partial success results
+    - change UI only for sucessful orders
+    - show clear error messages for failures 
+
+
+Full_stack flow:
+
+    - user logs in and receives permissions
+    - order table is loaded
+    - user selects multple orders
+    - user triggers bulk shipping
+    - front end sends lists of order id's
+    - back end validates each order
+    - backend updates valid orders
+    - returns success / failures list
+    - front end updates UI
+
+Audit logging:
+    all shipment atempts must be logged:
+        - who did it
+        - which orders were affected
+        - previous and new status
+        - timestamp
+        - bulk operations identifer 
