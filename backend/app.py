@@ -190,7 +190,7 @@ def bulk_ship():
 @role_required("admin")
 def audit_logs():
     db = get_db()
-    logs = db.execute("SELECT created_at, actor_user_id, action, before_state, after_state FROM audit_logs ORDER BY created_at DESC").fetchall()
+    logs = db.execute("SELECT audit_logs.bulk_operation_id, audit_logs.created_at, users.username, audit_logs.action, audit_logs.before_state, audit_logs.after_state FROM audit_logs JOIN users ON audit_logs.actor_user_id = users.id ORDER BY audit_logs.created_at DESC").fetchall()
     return render_template("audit_logs.html", logs=logs)
 
 if __name__ == "__main__":

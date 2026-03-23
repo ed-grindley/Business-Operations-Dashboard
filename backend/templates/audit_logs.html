@@ -3,27 +3,63 @@
 {% block title %}Audit Logs{% endblock %}
 
 {% block content %}
-<h1>Audit Logs</h1>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Bulk Order ID</th>
-            <th>User</th>
-            <th>Action</th>
-            <th>Details</th>
-            <th>Timestamp</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for log in logs %}
-        <tr>
-            <td>{{ log.bulk_id }}</td>
-            <td>{{ log.actor_user_id }}</td>
-            <td>{{ log.action }}</td>
-            <td>{{ log.before_state }} → {{ log.after_state }}</td>
-            <td>{{ log.timestamp }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">Audit Logs</h6>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+
+            <table class="table table-hover align-items-center">
+                
+                <thead class="thead-light">
+                    <tr>
+                        <th>Bulk ID</th>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>Change</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        
+                        <td>
+                            <span class="font-weight-bold">{{ log.bulk_operation_id }}</span>
+                        </td>
+
+                        <td>
+                            {{ log.username }}
+                        </td>
+
+                        <td>
+                            <span class="badge badge-info">
+                                {{ log.action }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <small class="text-muted">
+                                {{ log.before_state }} → {{ log.after_state }}
+                            </small>
+                        </td>
+
+                        <td>
+                            <small>
+                                {{ log.created_at }}
+                            </small>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,15 +1,13 @@
 {% extends "layout.html" %}
 
-{% block title %}Dashboard{% endblock %}
-<head>
-    <link href="stylesheet" rel="styles.css">
-</head>
 {% block content %}
-<h1>Orders</h1>
-<div>
-    <form class="filters" method="get">
+
+<h2 class="mb-4">Orders</h2>
+
+<div class="card mb-3 p-3">
+    <form class="form-inline" method="get">
         <input placeholder="Order ID" type="number" name="order_id" value="{{ request.args.get("order_id", "") }}">
-        <select name="status">
+        <select name="status" class="form-control mr-2">
             <option value="">All</option>
             <option value="pending" {% if request.args.get('status') == 'pending' %}selected{% endif %}>Pending</option>
             <option value="paid" {% if request.args.get('status') == 'paid' %}selected{% endif %}>Paid</option>
@@ -20,66 +18,72 @@
         <input type="date" name="date_until" value="{{ request.args.get('date_until', '') }}">
 
         {% if current_user.is_admin %}
-            <select name="user">
-                <option value="">ALl users</option>
+            <select name="user" class="form-control mr-2">
+                <option value="">All users</option>
                 {% for user in users %}
                     <option value="{{user.id}}">{{ user.username}}</option>
                 {% endfor %}
             </select>
         {% endif %}
         
-        <button type="submit" class="filter-button">Filter</button>
-        <a href="/dashboard" class="clear-filters">Clear</a>
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <a href="/dashboard" class="btn btn-secondary">Clear</a>
     </form>
 </div>
 
-<div>
-    <form method="POST" action="{{ url_for('bulk_ship') }}">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Order ID</th>
-                    <th>Product Name</th>
-                    <th>Quantity</th>
-                    {% if current_user.role == 'admin' %}
-                        <th>User ID</th>
-                    {% endif %}
-                    <th>Status</th>
-                    <th>Created At</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for order in orders %}
-                <tr class="table-row">
-                    <td>
-                        <input type="checkbox" name="order_ids" value="{{ order.id }}">
-                    </td>
-                    <td>{{ order['id'] }}</td>
-                    <td>{{ order['name'] }}</td>
-                    <td>{{ order['quantity'] }}</td>
-                    {% if current_user.role == 'admin' %}
-                        <td>{{ order['user_id'] }}</td>
-                    {% endif %}
-                    <td>
-                        <form method="POST" action="{{ url_for('update_status', order_id=order.id) }}">
-                                <select name="status" onchange="this.form.submit()">
-                                    <option value="pending" {% if order.status == 'pending' %} selected {% endif%}>Pending</option>
-                                    <option value="paid" {% if order.status == 'paid' %} selected {% endif%}>Paid</option>
-                                    <option value="shipped" {% if order.status == 'shipped' %} selected {% endif%}>Shipped</option>
-                                    <option value="refunded" {% if order.status == 'refunded' %} selected {% endif%}>Refunded</option>                            
-                                </select>
-                        </form>
-                    </td>
-                    <td>{{ order['created_at'] }}</td>
-                {% endfor %}
+<div class="card shadow">
+    <div class="card-body">
+        <div class="table-responsive">
+            <form method="POST" action="{{ url_for('bulk_ship') }}">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Order ID</th>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            {% if current_user.role == 'admin' %}
+                                <th>User ID</th>
+                            {% endif %}
+                            <th>Status</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr class="table-row">
+                            <td>
+                                <input type="checkbox" name="order_ids" value="{{ order.id }}">
+                            </td>
+                            <td>{{ order['id'] }}</td>
+                            <td>{{ order['name'] }}</td>
+                            <td>{{ order['quantity'] }}</td>
+                            {% if current_user.role == 'admin' %}
+                                <td>{{ order['user_id'] }}</td>
+                            {% endif %}
+                            <td>
+                                <form method="POST" action="{{ url_for('update_status', order_id=order.id) }}">
+                                        <select name="status" onchange="this.form.submit()">
+                                            <option value="pending" {% if order.status == 'pending' %} selected {% endif%}>Pending</option>
+                                            <option value="paid" {% if order.status == 'paid' %} selected {% endif%}>Paid</option>
+                                            <option value="shipped" {% if order.status == 'shipped' %} selected {% endif%}>Shipped</option>
+                                            <option value="refunded" {% if order.status == 'refunded' %} selected {% endif%}>Refunded</option>                            
+                                        </select>
+                                </form>
+                            </td>
+                            <td>{{ order['created_at'] }}</td>
+                        {% endfor %}
 
-                </tr>
-            </tbody>
-        </table>
+                        </tr>
+                    </tbody>
+                </table>
+            
+                <button type="submit" class="btn btn-primary">Ship Selected</button>
+
+            </form>
     
-        <button type="submit" class="btn btn-primary">Ship Selected</button>
-
-    </form>
+        </div>
+    </div>
 </div>
+
 {% endblock %}
