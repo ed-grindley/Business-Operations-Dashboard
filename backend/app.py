@@ -1,7 +1,8 @@
 import uuid
 from dotenv import load_dotenv
-from flask import Flask, flash, redirect, render_template, session, request, url_for, g
+from flask import Flask, flash, json, redirect, render_template, session, request, url_for, g
 load_dotenv()
+from backend.services.orders import ingest_order
 from db import get_db
 import config
 import sqlite3
@@ -192,6 +193,19 @@ def audit_logs():
     db = get_db()
     logs = db.execute("SELECT audit_logs.bulk_operation_id, audit_logs.created_at, users.username, audit_logs.action, audit_logs.before_state, audit_logs.after_state FROM audit_logs JOIN users ON audit_logs.actor_user_id = users.id ORDER BY audit_logs.created_at DESC").fetchall()
     return render_template("audit_logs.html", logs=logs)
+
+@app.route("/import-orders", methods=["POST"])
+def import_orders():
+    file = request.files["file"]
+    data = json.load(file)
+
+    bulk_id = str(uuid.uuid4())
+
+    for order in data:
+        ingest_order(order, bulk_id)
+
+    return "Imported"
+
 
 if __name__ == "__main__":
     app.run(debug=True)

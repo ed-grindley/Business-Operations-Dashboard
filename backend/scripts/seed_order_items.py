@@ -7,6 +7,10 @@ DB_PATH = BASE_DIR / "shipments.db"
 conn = sqlite3.connect('shipments.db')
 db = conn.cursor()
 
+orders = {
+    
+}
+
 
 order_items = [
     (1, 1, 99, 12.50),
